@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نظام التسميع - تقدمي</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;700&display=swap');
+
+  :root {
+    --green-dark: #1a3a2a;
+    --green-mid: #2d6a4f;
+    --green-light: #52b788;
+    --gold: #c9a84c;
+    --gold-light: #f0d080;
+    --cream: #faf7f0;
+    --cream-dark: #f0ebe0;
+    --text-dark: #1a1a1a;
+    --text-mid: #4a4a4a;
+    --text-light: #888;
+    --white: #ffffff;
+    --shadow: 0 2px 12px rgba(26,58,42,0.10);
+    --radius: 14px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Cairo', sans-serif;
+    background: var(--cream);
+    color: var(--text-dark);
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 100%);
+    color: var(--white);
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.18);
+  }
+
+  .header-title { display: flex; align-items: center; gap: 14px; }
+  .header-icon {
+    width: 46px; height: 46px;
+    background: var(--gold);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+  .header-title h1 { font-family: 'Amiri', serif; font-size: 22px; font-weight: 700; }
+  .header-title p { font-size: 12px; opacity: 0.75; margin-top: 2px; }
+
+  .header-badge {
+    background: rgba(255,255,255,0.13);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 13px;
+    color: var(--gold-light);
+  }
+
+  /* ── LOGIN SCREEN ── */
+  #loginScreen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 76px);
+    padding: 20px;
+  }
+
+  .login-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: 0 4px 32px rgba(26,58,42,0.13);
+    width: 100%;
+    max-width: 380px;
+    overflow: hidden;
+  }
+
+  .login-card-header {
+    background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
+    padding: 28px 24px;
+    text-align: center;
+    color: var(--white);
+  }
+
+  .login-card-header .big-icon { font-size: 44px; margin-bottom: 10px; }
+  .login-card-header h2 { font-family: 'Amiri', serif; font-size: 20px; }
+  .login-card-header p { font-size: 12px; opacity: 0.75; margin-top: 4px; }
+
+  .login-card-body { padding: 28px 24px; }
+
+  .form-group { margin-bottom: 18px; }
+
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-mid);
+    margin-bottom: 7px;
+  }
+
+  input {
+    width: 100%;
+    padding: 11px 16px;
+    border: 1.5px solid #dde5d8;
+    border-radius: 9px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 14px;
+    background: var(--cream);
+    color: var(--text-dark);
+    direction: rtl;
+    transition: border-color 0.2s;
+  }
+
+  input:focus { outline: none; border-color: var(--green-light); background: var(--white); }
+
+  .btn-login {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 9px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    background: linear-gradient(135deg, var(--green-mid), var(--green-light));
+    color: var(--white);
+    transition: all 0.2s;
+  }
+
+  .btn-login:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(45,106,79,0.3); }
+
+  .login-error {
+    color: #dc2626;
+    font-size: 13px;
+    text-align: center;
+    margin-top: 12px;
+    min-height: 20px;
+  }
+
+  /* ── MAIN SCREEN ── */
+  #mainScreen { display: none; }
+
+  .welcome-bar {
+    background: linear-gradient(90deg, #e8f5ee, #d4edda);
+    border-bottom: 1.5px solid var(--green-light);
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .welcome-name {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--green-dark);
+  }
+
+  .welcome-name span { font-family: 'Amiri', serif; font-size: 20px; }
+
+  .btn-logout {
+    background: var(--white);
+    border: 1.5px solid #dde5d8;
+    border-radius: 20px;
+    padding: 6px 18px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    color: var(--text-mid);
+    transition: all 0.2s;
+  }
+
+  .btn-logout:hover { border-color: #dc2626; color: #dc2626; }
+
+  .main-content {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 24px 20px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* STATS */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+
+  .stat-box {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 18px;
+    text-align: center;
+    box-shadow: var(--shadow);
+    border-top: 3px solid var(--green-light);
+  }
+
+  .stat-box.gold { border-top-color: var(--gold); }
+  .stat-box.dark { border-top-color: var(--green-dark); }
+
+  .stat-num { font-family: 'Amiri', serif; font-size: 30px; font-weight: 700; color: var(--green-dark); }
+  .stat-label { font-size: 12px; color: var(--text-light); margin-top: 4px; }
+
+  /* PROGRESS */
+  .progress-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 20px 24px;
+  }
+
+  .progress-card h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--green-dark);
+    margin-bottom: 12px;
+  }
+
+  .progress-bar-wrap {
+    background: var(--cream-dark);
+    border-radius: 20px;
+    height: 12px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green-mid), var(--green-light));
+    border-radius: 20px;
+    transition: width 0.6s ease;
+  }
+
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: var(--text-mid);
+    margin-bottom: 6px;
+  }
+
+  /* PAGES GRID */
+  .pages-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  .pages-card-header {
+    background: linear-gradient(90deg, var(--green-dark), var(--green-mid));
+    color: var(--white);
+    padding: 14px 20px;
+    font-size: 15px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .pages-legend {
+    display: flex;
+    gap: 14px;
+    padding: 10px 18px;
+    background: var(--cream);
+    border-bottom: 1px solid var(--cream-dark);
+    font-size: 12px;
+  }
+
+  .legend-item { display: flex; align-items: center; gap: 5px; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 3px; }
+
+  .pages-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+    gap: 4px;
+    padding: 14px;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  .page-pill {
+    aspect-ratio: 1;
+    border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    font-weight: 600;
+  }
+
+  .page-pill.done { background: var(--green-mid); color: var(--white); }
+  .page-pill.pending { background: var(--cream-dark); color: var(--text-light); border: 1px solid #dde5d8; }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--cream-dark); }
+  ::-webkit-scrollbar-thumb { background: var(--green-light); border-radius: 10px; }
+
+  /* LOADING */
+  .spinner {
+    width: 36px; height: 36px;
+    border: 3px solid var(--cream-dark);
+    border-top-color: var(--green-mid);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 40px auto 12px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 480px) {
+    .stats-row { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .stat-num { font-size: 22px; }
+    header { padding: 14px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-title">
+    <div class="header-icon">🕌</div>
+    <div>
+      <h1>نظام تسميع القرآن الكريم</h1>
+      <p>متابعة تقدمي</p>
+    </div>
+  </div>
+  <div class="header-badge" id="statusBadge">⏳ جارٍ الاتصال</div>
+</header>
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-card-header">
+      <div class="big-icon">📖</div>
+      <h2>أهلاً بكِ</h2>
+      <p>أدخلي كلمة المرور الخاصة بكِ لتتابعي تقدمك</p>
+    </div>
+    <div class="login-card-body">
+      <div class="form-group">
+        <label>كلمة المرور</label>
+        <input type="password" id="passwordInput" placeholder="أدخلي كلمة مرورك..." onkeydown="if(event.key==='Enter') login()" />
+      </div>
+      <button class="btn-login" onclick="login()">دخول ←</button>
+      <div class="login-error" id="loginError"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN SCREEN -->
+<div id="mainScreen">
+  <div class="welcome-bar">
+    <div class="welcome-name">أهلاً، <span id="studentNameDisplay">—</span> 👋</div>
+    <button class="btn-logout" onclick="logout()">تسجيل الخروج</button>
+  </div>
+
+  <div class="main-content">
+
+    <!-- Loading -->
+    <div id="loadingDiv" style="text-align:center;">
+      <div class="spinner"></div>
+      <p style="color:var(--text-light);font-size:13px;">جارٍ التحميل...</p>
+    </div>
+
+    <!-- Content -->
+    <div id="studentContent" style="display:none;flex-direction:column;gap:20px;">
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-box">
+          <div class="stat-num" id="statDone">0</div>
+          <div class="stat-label">صفحة مسمَّعة</div>
+        </div>
+        <div class="stat-box gold">
+          <div class="stat-num" id="statRemain">604</div>
+          <div class="stat-label">صفحة متبقية</div>
+        </div>
+        <div class="stat-box dark">
+          <div class="stat-num" id="statPct">0%</div>
+          <div class="stat-label">نسبة الإنجاز</div>
+        </div>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="progress-card">
+        <h3>📊 التقدم الكلي</h3>
+        <div class="progress-label">
+          <span>من 604 صفحة</span>
+          <span id="progressLabel">0 / 604</span>
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
+        </div>
+      </div>
+
+      <!-- Pages Grid -->
+      <div class="pages-card">
+        <div class="pages-card-header">📖 صفحات القرآن الكريم</div>
+        <div class="pages-legend">
+          <div class="legend-item">
+            <div class="legend-dot" style="background:#2d6a4f;"></div>
+            <span>مسمَّعة ✓</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background:#f0ebe0;border:1px solid #dde5d8;"></div>
+            <span>لم تُسمَّع بعد</span>
+          </div>
+        </div>
+        <div class="pages-grid" id="pagesGrid"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDkyEfdhVAOj4aeix14W23z8hT1L7iHoWs",
+  authDomain: "quran-tracking-727be.firebaseapp.com",
+  projectId: "quran-tracking-727be",
+  storageBucket: "quran-tracking-727be.firebasestorage.app",
+  messagingSenderId: "766154321274",
+  appId: "1:766154321274:web:c21827b1429474e7c3bac3"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+let allStudents = {};
+let currentStudentId = null;
+let unsubscribe = null;
+
+// ── REALTIME LISTENER ────────────────────────────────────────
+unsubscribe = onSnapshot(collection(db, "students"), (snapshot) => {
+  allStudents = {};
+  snapshot.forEach(d => { allStudents[d.id] = d.data(); });
+  document.getElementById('statusBadge').textContent = '🟢 متصل';
+
+  if (currentStudentId) renderStudentData();
+}, () => {
+  document.getElementById('statusBadge').textContent = '🔴 غير متصل';
+});
+
+// ── LOGIN ────────────────────────────────────────────────────
+window.login = function() {
+  const pass = document.getElementById('passwordInput').value.trim();
+  const errEl = document.getElementById('loginError');
+  errEl.textContent = '';
+
+  if (!pass) { errEl.textContent = 'أدخلي كلمة المرور'; return; }
+
+  // بحث عن الطالبة بكلمة المرور
+  const match = Object.entries(allStudents).find(([id, s]) => s.password === pass);
+
+  if (!match) {
+    errEl.textContent = '❌ كلمة المرور غير صحيحة';
+    document.getElementById('passwordInput').value = '';
+    return;
+  }
+
+  currentStudentId = match[0];
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('mainScreen').style.display = 'block';
+  document.getElementById('studentNameDisplay').textContent = match[1].name;
+
+  renderStudentData();
+  setTimeout(() => {
+    document.getElementById('loadingDiv').style.display = 'none';
+    document.getElementById('studentContent').style.display = 'flex';
+  }, 600);
+};
+
+// ── RENDER DATA ─────────────────────────────────────────────
+function renderStudentData() {
+  const s = allStudents[currentStudentId];
+  if (!s) return;
+
+  const doneSet = new Set(s.pages || []);
+  const done = doneSet.size;
+  const pct = Math.round(done / 604 * 100);
+
+  document.getElementById('statDone').textContent = done;
+  document.getElementById('statRemain').textContent = 604 - done;
+  document.getElementById('statPct').textContent = pct + '%';
+  document.getElementById('progressLabel').textContent = done + ' / 604';
+  document.getElementById('progressBar').style.width = pct + '%';
+
+  let html = '';
+  for (let i = 1; i <= 604; i++) {
+    html += `<div class="page-pill ${doneSet.has(i) ? 'done' : 'pending'}" title="صفحة ${i}">${i}</div>`;
+  }
+  document.getElementById('pagesGrid').innerHTML = html;
+}
+
+// ── LOGOUT ──────────────────────────────────────────────────
+window.logout = function() {
+  currentStudentId = null;
+  document.getElementById('mainScreen').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('passwordInput').value = '';
+  document.getElementById('loginError').textContent = '';
+  document.getElementById('loadingDiv').style.display = 'block';
+  document.getElementById('studentContent').style.display = 'none';
+};
+</script>
+
+</body>
+</html>

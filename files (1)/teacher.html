@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نظام التسميع - لوحة الأنسة</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;700&display=swap');
+
+  :root {
+    --green-dark: #1a3a2a;
+    --green-mid: #2d6a4f;
+    --green-light: #52b788;
+    --gold: #c9a84c;
+    --gold-light: #f0d080;
+    --cream: #faf7f0;
+    --cream-dark: #f0ebe0;
+    --text-dark: #1a1a1a;
+    --text-mid: #4a4a4a;
+    --text-light: #888;
+    --white: #ffffff;
+    --shadow: 0 2px 12px rgba(26,58,42,0.10);
+    --radius: 12px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Cairo', sans-serif;
+    background: var(--cream);
+    color: var(--text-dark);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 100%);
+    color: var(--white);
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.18);
+  }
+
+  .header-title {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .header-icon {
+    width: 46px; height: 46px;
+    background: var(--gold);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+
+  .header-title h1 {
+    font-family: 'Amiri', serif;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  .header-title p {
+    font-size: 12px;
+    opacity: 0.75;
+    margin-top: 2px;
+  }
+
+  .header-badge {
+    background: rgba(255,255,255,0.13);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 13px;
+    color: var(--gold-light);
+  }
+
+  /* MAIN LAYOUT */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 28px 20px;
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  /* CARD */
+  .card {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  .card-header {
+    background: linear-gradient(90deg, var(--green-dark), var(--green-mid));
+    color: var(--white);
+    padding: 14px 20px;
+    font-size: 15px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card-body { padding: 20px; }
+
+  /* ADD STUDENT FORM */
+  .form-group { margin-bottom: 14px; }
+
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-mid);
+    margin-bottom: 6px;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid #dde5d8;
+    border-radius: 8px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 14px;
+    background: var(--cream);
+    color: var(--text-dark);
+    transition: border-color 0.2s;
+    direction: rtl;
+  }
+
+  input[type="text"]:focus {
+    outline: none;
+    border-color: var(--green-light);
+    background: var(--white);
+  }
+
+  .btn {
+    width: 100%;
+    padding: 11px;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--green-mid), var(--green-light));
+    color: var(--white);
+  }
+
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(45,106,79,0.3); }
+
+  .btn-gold {
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: var(--green-dark);
+  }
+
+  .btn-gold:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(201,168,76,0.35); }
+
+  .btn-sm {
+    width: auto;
+    padding: 6px 14px;
+    font-size: 12px;
+    border-radius: 6px;
+  }
+
+  .btn-danger {
+    background: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fca5a5;
+  }
+
+  .btn-danger:hover { background: #fca5a5; }
+
+  /* STUDENT LIST */
+  .student-list { max-height: 340px; overflow-y: auto; }
+
+  .student-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--cream-dark);
+    cursor: pointer;
+    transition: background 0.15s;
+    border-radius: 6px;
+    margin-bottom: 2px;
+  }
+
+  .student-item:hover { background: var(--cream); }
+  .student-item.active { background: #e8f5ee; border-right: 3px solid var(--green-mid); }
+
+  .student-name { font-size: 14px; font-weight: 600; }
+  .student-meta { font-size: 11px; color: var(--text-light); margin-top: 2px; }
+
+  .student-actions { display: flex; gap: 6px; align-items: center; }
+
+  /* PROGRESS PANEL */
+  .progress-panel { display: flex; flex-direction: column; gap: 20px; }
+
+  .selected-student-info {
+    background: linear-gradient(135deg, #e8f5ee, #d4edda);
+    border: 1.5px solid var(--green-light);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .student-avatar {
+    width: 52px; height: 52px;
+    background: var(--green-mid);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--white);
+    font-size: 22px;
+    font-family: 'Amiri', serif;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .student-info-text h2 { font-size: 17px; font-weight: 700; color: var(--green-dark); }
+  .student-info-text p { font-size: 12px; color: var(--text-mid); margin-top: 3px; }
+
+  /* PAGES GRID */
+  .pages-section .card-header { justify-content: space-between; }
+
+  .pages-legend {
+    display: flex;
+    gap: 14px;
+    padding: 12px 20px;
+    background: var(--cream);
+    border-bottom: 1px solid var(--cream-dark);
+    font-size: 12px;
+  }
+
+  .legend-item { display: flex; align-items: center; gap: 5px; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 3px; }
+
+  .pages-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));
+    gap: 5px;
+    padding: 16px;
+    max-height: 380px;
+    overflow-y: auto;
+  }
+
+  .page-btn {
+    aspect-ratio: 1;
+    border: 1.5px solid #dde5d8;
+    border-radius: 6px;
+    background: var(--white);
+    cursor: pointer;
+    font-family: 'Cairo', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-mid);
+    transition: all 0.15s;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .page-btn:hover { border-color: var(--green-light); background: #e8f5ee; color: var(--green-dark); }
+  .page-btn.done { background: var(--green-mid); color: var(--white); border-color: var(--green-mid); }
+  .page-btn.done:hover { background: #1a5c3a; }
+
+  /* STATS */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .stat-box {
+    background: var(--white);
+    border-radius: 10px;
+    padding: 14px;
+    text-align: center;
+    box-shadow: var(--shadow);
+    border-top: 3px solid var(--green-light);
+  }
+
+  .stat-box.gold { border-top-color: var(--gold); }
+  .stat-box.dark { border-top-color: var(--green-dark); }
+
+  .stat-num { font-family: 'Amiri', serif; font-size: 26px; font-weight: 700; color: var(--green-dark); }
+  .stat-label { font-size: 11px; color: var(--text-light); margin-top: 3px; }
+
+  /* PROGRESS BAR */
+  .progress-bar-wrap {
+    background: var(--cream-dark);
+    border-radius: 20px;
+    height: 10px;
+    overflow: hidden;
+    margin-top: 6px;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green-mid), var(--green-light));
+    border-radius: 20px;
+    transition: width 0.5s ease;
+  }
+
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--text-mid);
+    margin-bottom: 4px;
+  }
+
+  /* EMPTY STATE */
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-light);
+  }
+
+  .empty-state .icon { font-size: 40px; margin-bottom: 12px; }
+  .empty-state p { font-size: 14px; }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--green-dark);
+    color: var(--white);
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 600;
+    z-index: 999;
+    transition: transform 0.35s ease;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* STATUS */
+  .status-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    display: inline-block; margin-left: 6px;
+  }
+  .status-dot.online { background: #22c55e; }
+  .status-dot.offline { background: #ef4444; }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--cream-dark); }
+  ::-webkit-scrollbar-thumb { background: var(--green-light); border-radius: 10px; }
+
+  /* CONFIRM MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.45);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1000;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--white);
+    border-radius: 14px;
+    padding: 28px;
+    max-width: 360px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  }
+  .modal h3 { font-size: 17px; margin-bottom: 10px; color: var(--green-dark); }
+  .modal p { font-size: 13px; color: var(--text-mid); margin-bottom: 20px; }
+  .modal-btns { display: flex; gap: 10px; justify-content: center; }
+  .modal-btns button { width: 110px; }
+
+  @media (max-width: 768px) {
+    .container { grid-template-columns: 1fr; }
+    .stats-row { grid-template-columns: repeat(3, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-title">
+    <div class="header-icon">🕌</div>
+    <div>
+      <h1>نظام تسميع القرآن الكريم</h1>
+      <p>لوحة تحكم الأنسة</p>
+    </div>
+  </div>
+  <div class="header-badge">
+    <span class="status-dot online" id="statusDot"></span>
+    <span id="statusText">متصل</span>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- RIGHT SIDEBAR -->
+  <div style="display:flex;flex-direction:column;gap:20px;">
+
+    <!-- Add Student -->
+    <div class="card">
+      <div class="card-header">➕ إضافة طالبة جديدة</div>
+      <div class="card-body">
+        <div class="form-group">
+          <label>اسم الطالبة</label>
+          <input type="text" id="studentNameInput" placeholder="أدخلي اسم الطالبة..." />
+        </div>
+        <div class="form-group">
+          <label>كلمة المرور</label>
+          <input type="text" id="studentPasswordInput" placeholder="كلمة مرور الطالبة..." />
+        </div>
+        <button class="btn btn-primary" onclick="addStudent()">إضافة الطالبة</button>
+      </div>
+    </div>
+
+    <!-- Student List -->
+    <div class="card">
+      <div class="card-header">👩‍🎓 قائمة الطالبات (<span id="studentCount">0</span>)</div>
+      <div class="card-body" style="padding:10px;">
+        <div class="student-list" id="studentList">
+          <div class="empty-state">
+            <div class="icon">📋</div>
+            <p>لا توجد طالبات بعد</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- LEFT MAIN PANEL -->
+  <div class="progress-panel">
+
+    <!-- Stats -->
+    <div class="stats-row" id="statsRow">
+      <div class="stat-box">
+        <div class="stat-num" id="statPages">-</div>
+        <div class="stat-label">صفحة مسمّعة</div>
+      </div>
+      <div class="stat-box gold">
+        <div class="stat-num" id="statRemaining">-</div>
+        <div class="stat-label">صفحة متبقية</div>
+      </div>
+      <div class="stat-box dark">
+        <div class="stat-num" id="statPercent">-</div>
+        <div class="stat-label">نسبة الإنجاز</div>
+      </div>
+    </div>
+
+    <!-- Selected Student Info -->
+    <div id="selectedStudentInfo" style="display:none;">
+      <div class="selected-student-info">
+        <div class="student-avatar" id="studentAvatar">؟</div>
+        <div class="student-info-text">
+          <h2 id="selectedStudentName">—</h2>
+          <p id="selectedStudentSub">اختاري طالبة من القائمة لتسجيل التسميع</p>
+          <div style="margin-top:8px;">
+            <div class="progress-label">
+              <span>التقدم</span>
+              <span id="progressText">0 / 604</span>
+            </div>
+            <div class="progress-bar-wrap">
+              <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- No Selection -->
+    <div id="noSelection" class="card">
+      <div class="empty-state" style="padding:60px 20px;">
+        <div class="icon">☝️</div>
+        <p>اختاري طالبة من القائمة لتظهر هنا صفحات القرآن</p>
+      </div>
+    </div>
+
+    <!-- Pages Grid -->
+    <div class="card pages-section" id="pagesSection" style="display:none;">
+      <div class="card-header">
+        📖 صفحات القرآن الكريم (604 صفحة)
+        <button class="btn btn-sm btn-danger" onclick="clearStudentPages()" style="margin-right:auto;">مسح الكل</button>
+      </div>
+      <div class="pages-legend">
+        <div class="legend-item">
+          <div class="legend-dot" style="background:#fff;border:1.5px solid #dde5d8;"></div>
+          <span>لم تُسمَّع</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:#2d6a4f;"></div>
+          <span>مسمَّعة ✓</span>
+        </div>
+      </div>
+      <div class="pages-grid" id="pagesGrid"></div>
+      <div style="padding:10px 16px;border-top:1px solid var(--cream-dark);font-size:12px;color:var(--text-light);text-align:center;">
+        ✅ يتم الحفظ تلقائياً عند الضغط على أي صفحة
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Confirm Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h3 id="modalTitle">تأكيد الحذف</h3>
+    <p id="modalMsg">هل أنت متأكدة؟</p>
+    <div class="modal-btns">
+      <button class="btn btn-danger btn-sm" id="modalConfirmBtn">تأكيد</button>
+      <button class="btn btn-sm" style="background:var(--cream-dark);color:var(--text-mid);" onclick="closeModal()">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, doc, setDoc, getDoc, getDocs, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDkyEfdhVAOj4aeix14W23z8hT1L7iHoWs",
+  authDomain: "quran-tracking-727be.firebaseapp.com",
+  projectId: "quran-tracking-727be",
+  storageBucket: "quran-tracking-727be.firebasestorage.app",
+  messagingSenderId: "766154321274",
+  appId: "1:766154321274:web:c21827b1429474e7c3bac3"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+let students = {};
+let selectedStudentId = null;
+let pendingPages = new Set();
+let modalCallback = null;
+
+// ─── REALTIME LISTENER ───────────────────────────────────────
+const unsub = onSnapshot(collection(db, "students"), (snapshot) => {
+  students = {};
+  snapshot.forEach(docSnap => {
+    students[docSnap.id] = docSnap.data();
+  });
+  renderStudentList();
+  if (selectedStudentId) renderPages();
+  document.getElementById('statusDot').className = 'status-dot online';
+  document.getElementById('statusText').textContent = 'متصل';
+}, (err) => {
+  document.getElementById('statusDot').className = 'status-dot offline';
+  document.getElementById('statusText').textContent = 'غير متصل';
+});
+
+// ─── ADD STUDENT ─────────────────────────────────────────────
+window.addStudent = async function() {
+  const input = document.getElementById('studentNameInput');
+  const passInput = document.getElementById('studentPasswordInput');
+  const name = input.value.trim();
+  const password = passInput.value.trim();
+  if (!name) { showToast('⚠️ أدخلي اسم الطالبة'); return; }
+  if (!password) { showToast('⚠️ أدخلي كلمة المرور'); return; }
+
+  const id = 'st_' + Date.now();
+  await setDoc(doc(db, "students", id), {
+    name,
+    password,
+    pages: [],
+    addedAt: new Date().toISOString()
+  });
+
+  input.value = '';
+  passInput.value = '';
+  showToast('✅ تمت إضافة ' + name);
+};
+
+// ─── RENDER STUDENT LIST ─────────────────────────────────────
+function renderStudentList() {
+  const list = document.getElementById('studentList');
+  const ids = Object.keys(students);
+  document.getElementById('studentCount').textContent = ids.length;
+
+  if (ids.length === 0) {
+    list.innerHTML = '<div class="empty-state"><div class="icon">📋</div><p>لا توجد طالبات بعد</p></div>';
+    return;
+  }
+
+  list.innerHTML = ids.map(id => {
+    const s = students[id];
+    const count = (s.pages || []).length;
+    const pct = Math.round(count / 604 * 100);
+    return `
+      <div class="student-item ${selectedStudentId === id ? 'active' : ''}" onclick="selectStudent('${id}')">
+        <div>
+          <div class="student-name">${s.name}</div>
+          <div class="student-meta">${count} صفحة • ${pct}%</div>
+        </div>
+        <div class="student-actions">
+          <button class="btn btn-sm btn-danger" onclick="event.stopPropagation();confirmDelete('${id}','${s.name}')">🗑</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ─── SELECT STUDENT ──────────────────────────────────────────
+window.selectStudent = function(id) {
+  selectedStudentId = id;
+  const s = students[id];
+  pendingPages = new Set(s.pages || []);
+
+  document.getElementById('noSelection').style.display = 'none';
+  document.getElementById('pagesSection').style.display = 'block';
+  document.getElementById('selectedStudentInfo').style.display = 'block';
+
+  document.getElementById('selectedStudentName').textContent = s.name;
+  document.getElementById('studentAvatar').textContent = s.name.charAt(0);
+
+  renderPages();
+  renderStudentList();
+};
+
+// ─── RENDER PAGES ─────────────────────────────────────────────
+function renderPages() {
+  const grid = document.getElementById('pagesGrid');
+  let html = '';
+  for (let i = 1; i <= 604; i++) {
+    const done = pendingPages.has(i);
+    html += `<button class="page-btn ${done ? 'done' : ''}" onclick="togglePage(${i})" title="صفحة ${i}">${i}</button>`;
+  }
+  grid.innerHTML = html;
+  updateStats();
+}
+
+// ─── TOGGLE PAGE ─────────────────────────────────────────────
+window.togglePage = async function(n) {
+  if (pendingPages.has(n)) pendingPages.delete(n);
+  else pendingPages.add(n);
+
+  const btn = document.querySelector(`.page-btn:nth-child(${n})`);
+  if (btn) btn.classList.toggle('done');
+  updateStats();
+
+  // حفظ تلقائي
+  const pagesArr = Array.from(pendingPages).sort((a,b) => a-b);
+  await setDoc(doc(db, "students", selectedStudentId), {
+    ...students[selectedStudentId],
+    pages: pagesArr,
+    lastUpdated: new Date().toISOString()
+  });
+};
+
+// ─── UPDATE STATS ─────────────────────────────────────────────
+function updateStats() {
+  const done = pendingPages.size;
+  const remaining = 604 - done;
+  const pct = Math.round(done / 604 * 100);
+
+  document.getElementById('statPages').textContent = done;
+  document.getElementById('statRemaining').textContent = remaining;
+  document.getElementById('statPercent').textContent = pct + '%';
+  document.getElementById('progressText').textContent = done + ' / 604';
+  document.getElementById('progressBar').style.width = pct + '%';
+
+  const s = students[selectedStudentId];
+  if (s) document.getElementById('selectedStudentSub').textContent = `آخر تحديث: ${new Date().toLocaleDateString('ar-SY')}`;
+}
+
+// ─── SAVE PROGRESS ────────────────────────────────────────────
+window.saveProgress = async function() {
+  if (!selectedStudentId) return;
+  const pagesArr = Array.from(pendingPages).sort((a,b) => a-b);
+  await setDoc(doc(db, "students", selectedStudentId), {
+    ...students[selectedStudentId],
+    pages: pagesArr,
+    lastUpdated: new Date().toISOString()
+  });
+  showToast('💾 تم حفظ التقدم بنجاح!');
+};
+
+// ─── CLEAR PAGES ─────────────────────────────────────────────
+window.clearStudentPages = function() {
+  openModal('مسح كل الصفحات', 'هل تريدين مسح كل صفحات هذه الطالبة؟', async () => {
+    pendingPages.clear();
+    renderPages();
+    await saveProgress();
+  });
+};
+
+// ─── DELETE STUDENT ──────────────────────────────────────────
+window.confirmDelete = function(id, name) {
+  openModal('حذف الطالبة', `هل تريدين حذف "${name}" نهائياً؟`, async () => {
+    await deleteDoc(doc(db, "students", id));
+    if (selectedStudentId === id) {
+      selectedStudentId = null;
+      pendingPages.clear();
+      document.getElementById('noSelection').style.display = 'block';
+      document.getElementById('pagesSection').style.display = 'none';
+      document.getElementById('selectedStudentInfo').style.display = 'none';
+      document.getElementById('statPages').textContent = '-';
+      document.getElementById('statRemaining').textContent = '-';
+      document.getElementById('statPercent').textContent = '-';
+    }
+    showToast('🗑️ تم حذف الطالبة');
+  });
+};
+
+// ─── MODAL ───────────────────────────────────────────────────
+function openModal(title, msg, callback) {
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalMsg').textContent = msg;
+  modalCallback = callback;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+window.closeModal = function() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  modalCallback = null;
+};
+
+document.getElementById('modalConfirmBtn').onclick = () => {
+  if (modalCallback) modalCallback();
+  closeModal();
+};
+
+// ─── TOAST ───────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+window.showToast = showToast;
+</script>
+
+</body>
+</html>
